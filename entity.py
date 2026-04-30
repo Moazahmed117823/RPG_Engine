@@ -11,5 +11,11 @@ class Entity(ABC):
     def take_damage(self, amount: int):
         self.hp -= amount
 
+    def attack(self, victum):
+        victum.take_damage(self.attack_power)
+        print(f"{self.name} attacked {victum.name} for {self.attack_power} damage")
+    
     def is_alive(self):
         return self.hp > 0
+    
+    
