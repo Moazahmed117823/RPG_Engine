@@ -1,4 +1,6 @@
-class Entity:
+from abc import ABS , abstractmethod
+
+class Entity():
     def __init__(self, name, hp, level, attack):
         self.name = name
         self.hp = hp
