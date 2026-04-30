@@ -8,6 +8,4 @@ class Player(Entity):
 
     def heal(self, amount):
         self.hp += amount
-
-    def attack(self, enemy):
-        enemy.take_damage(self.attack_power)
+        print(f"{self.name} healed for {amount} hp")
