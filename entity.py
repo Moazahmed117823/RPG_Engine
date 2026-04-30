@@ -8,7 +8,7 @@ class Entity():
         self.level = level
         self.attack = attack
 
-    def take_damage(self, amount):
+    def take_damage(self, amount: int):
         self.hp -= amount
 
     def is_alive(self):
