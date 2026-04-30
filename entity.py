@@ -1,7 +1,7 @@
 from abc import ABS , abstractmethod
 
 class Entity():
-    def __init__(self, name, hp, level, attack):
+    def __init__(self, name: str, hp: int, level: int, attack: int):
         self.name = name
         self.hp = hp
         # more level = more hp and attack skills and less damage taken
