@@ -2,9 +2,12 @@ from entity import Entity
 
 
 class Player(Entity):
-    def __init__(self, name):
-        super().__init__(name, hp=100, level=0, attack=1)
+    def __init__(self, name: str = None, hp: int = 100, level: int = 1, attack_power: int = 1):
+        super().__init__(name, hp, level, attack_power)
         self.inventory = []
 
     def heal(self, amount):
         self.hp += amount
+
+    def attack(self, enemy):
+        enemy.take_damage(self.attack_power)

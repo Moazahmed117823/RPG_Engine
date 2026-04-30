@@ -3,10 +3,10 @@ import random
 
 
 class Enemy(Entity):
-    def __init__(self, name, hp, attack,level):
-        super().__init__(name, hp, attack,level)
+    def __init__(self, name: str = None, hp: int = 100, level: int = 1, attack_power: int = 1):
+        super().__init__(name, hp, level, attack_power)
     
-    def attack_player(self, player):
+    def attack(self, player):
         damage = random.randint(5,20) * self.level
         player.take_damage(damage)
 
