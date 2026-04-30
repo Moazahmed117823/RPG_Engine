@@ -9,6 +9,7 @@ class Enemy(Entity):
     def attack(self, player):
         damage = random.randint(5,20) * self.level
         player.take_damage(damage)
+        print(f"{self.name} attacked {player.name} for {damage} damage")
 
 
 
