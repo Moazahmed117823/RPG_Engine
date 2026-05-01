@@ -7,8 +7,12 @@ class Entity(ABC):
         # more level = more hp and attack skills and less damage taken
         self.level = level
         self.attack_power = attack_power
+        self.is_defending = False
 
     def take_damage(self, amount: int):
+        if self.is_defending:
+            amount //= 2
+            print(f"{self.name} blocks the attack!")
         self.hp -= amount
 
     def attack(self, victum):
