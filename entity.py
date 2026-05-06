@@ -4,6 +4,7 @@ class Entity(ABC):
     def __init__(self, name: str = None, hp: int = 100, level: int = 1, attack_power: int = 1):
         self.name = name
         self.hp = hp + (level * 1.5)
+        self.max_hp = self.hp
         # more level = more hp and attack skills and less damage taken
         self.level = level
         self.attack_power = attack_power
