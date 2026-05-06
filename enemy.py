@@ -8,6 +8,4 @@ class Enemy(Entity):
 
     def heal(self, amount):
         self.hp += amount
-        print(f"{self.name} healed for {amount} hp")
-
 
