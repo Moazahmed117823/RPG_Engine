@@ -58,15 +58,16 @@ class CombatManager:
         elif choice == 3:
             if self.__heal_charge > 0:
                 heal_amount = self.player.level * 10
-                if self.player.hp + heal_amount <= self.player.max_hp:                    
-                    self.player.heal(heal_amount)
-                    self.__heal_charge -= 1
-                else:
-                    self.log("Not enough health") 
+                actual_heal = min(heal_amount, self.player.max_hp - self.player.hp)
+                self.player.heal(actual_heal)
+                self.__heal_charge -= 1
+                self.log(f"{self.player.name} healed for {actual_heal} HP!")
             else:
-                self.log("No heal charge left")  
+                self.log("No heal charges left!")
+
     def EnemyTurn(self):
         pass
+    
     def Start(self):
         pass
 
