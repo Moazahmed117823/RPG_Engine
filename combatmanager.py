@@ -1,9 +1,7 @@
 import random
 import time
-
 from enemy import Enemy
 from player import Player
-
 
 class CombatManager:
     def __init__(self, player: Player, enemy: Enemy):
@@ -12,20 +10,30 @@ class CombatManager:
         self.__round_number = 0
         self.__combat_log = []
         self.__is_active = False
-        self.__heal_charge = 3
+        self.__player_heal_charge = 3
+        self.__enemy_heal_charge = 3
 
     def log(self, message: str):
         self.__combat_log.append(message)
         print(message)
 
     def getLog(self):
-        return self.__combat_log
+        for log in self.__combat_log:
+            print(log, end="\n")
 
+    def __str__(self):
+        player_hp = max(0, self.player.hp)
+        enemy_hp = max(0, self.enemy.hp)
+        return f"\n[ {self.player.name}: {player_hp} HP ] - Round ({self.__round_number}) - [ {self.enemy.name}: {enemy_hp} HP ]\n"
+
+    def __call__(self):
+        self.start()
+        
     def TakePlayerAction(self):
         print("What will you do")
         print("1. Attack")
         print("2. Defend")
-        print("3. Heal")
+        print(f"3. Heal ({self.__player_heal_charge} charges left)")
         try:
             print("Enter choice (1-3): ")
             choice = int(input("    --> "))
@@ -60,17 +68,18 @@ class CombatManager:
             self.log(f"{self.player.name} Reflect {self.enemy.name}'s attack")
 
         elif choice == 3:
-            if self.__heal_charge > 0:
+            if self.__player_heal_charge > 0:
                 heal_amount = self.player.level * 10
                 actual_heal = min(heal_amount, self.player.max_hp - self.player.hp)
                 self.player.heal(actual_heal)
-                self.__heal_charge -= 1
+                self.__player_heal_charge -= 1
                 self.log(f"{self.player.name} healed for {actual_heal} HP!")
             else:
                 self.log("No heal charges left!")
 
     def EnemyTurn(self):
-        choice = random.randint(1,3)
+        self.enemy.is_defending = False
+        choice = random.randint(1, 3)
         if choice == 1:
             critical_chance = 0.15 + (self.enemy.level * 0.005)
             if random.random() < critical_chance:
@@ -78,49 +87,57 @@ class CombatManager:
                 self.log("Critical Hit !!")
                 self.player.take_damage(critical_damage)
                 self.log(
-                    f"[FIGHT] {self.enemy.name} give {critical_damage} critical damage to {self.player.name}"
+                    f"[FIGHT] {self.enemy.name} gives {critical_damage} critical damage to {self.player.name}"
                 )
             else:
                 self.enemy.attack(self.player)
+
         elif choice == 2:
             self.enemy.is_defending = True
             self.log(f"{self.enemy.name} Reflect {self.player.name}'s attack")
 
         elif choice == 3:
-            if self.__heal_charge > 0:
+            if self.__enemy_heal_charge > 0:
                 heal_amount = self.enemy.level * 10
                 actual_heal = min(heal_amount, self.enemy.max_hp - self.enemy.hp)
                 self.enemy.heal(actual_heal)
-                self.__heal_charge -= 1
+                self.__enemy_heal_charge -= 1
                 self.log(f"{self.enemy.name} healed for {actual_heal} HP!")
             else:
-                self.log("No heal charges left!")
+                self.log(f"{self.enemy.name} has no heal charges left!")
 
     def check_combat_end(self):
         if not self.player.is_alive():
             self.log(f"\n{self.player.name} has been defeated. Game Over.")
+            self.__is_active = False
             return True
         if not self.enemy.is_alive():
             self.log(f"\n{self.player.name} is victorious!")
+            self.__is_active = False
             return True
         return False
 
-    def Start(self):
+    def start(self):
         self.__is_active = True
-        self.log(f"\nCombat started between {self.player.name} and {self.enemy.name}\n{self.player.hp}HP --- {self.enemy.hp}HP\n")
+        self.log(f"\nCombat started between {self.player.name} and {self.enemy.name}")
+        #self.log(f"{self.player.hp} HP  ---  {self.enemy.hp} HP\n")
+
         while self.__is_active:
             self.__round_number += 1
-            self.log(f"Round {self.__round_number} begins!")
+            #self.log(f"\n--- Round {self.__round_number} ---")
+            print(self)
+
             player_choice = self.TakePlayerAction()
-            if player_choice:
-                self.PlayerTurn(player_choice)
-                if not self.enemy.is_alive():
-                    self.log(f"{self.enemy.name} is defeated! {self.player.name} wins!")
-                    break
-                time.sleep(1)
-                self.EnemyTurn()
-                if not self.player.is_alive():
-                    self.log(f"{self.player.name} is defeated! {self.enemy.name} wins!")
-                    break
-            else:
+            if not player_choice:
                 self.log("Invalid action. Try again.")
+                continue
+
+            self.PlayerTurn(player_choice)
+            if self.check_combat_end():
+                break
+
+            time.sleep(1)
+
+            self.EnemyTurn()
+            if self.check_combat_end():
+                break
