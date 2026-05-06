@@ -31,9 +31,10 @@ class CombatManager:
                 print("Invalid choice")
                 return False
             return choice
-        except ValueError:
-            print("Invalid input")
+        except Exception as e:
+            print(f"[ERROR] {e}")
             return False
+
         
     def PlayerTurn(self, choice: int):
         """ Attack depend on level and attack power
