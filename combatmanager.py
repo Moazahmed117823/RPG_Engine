@@ -18,13 +18,19 @@ class CombatManager:
         print(message)
 
     def getLog(self):
+        print("\n================================= FIGHT HISTORY =================================")
         for log in self.__combat_log:
-            print(log, end="\n")
+            print(f" {log}\n")
+        print("\n================================= END of FIGHT ==================================")
 
+ 
     def __str__(self):
         player_hp = max(0, self.player.hp)
         enemy_hp = max(0, self.enemy.hp)
         return f"\n[ {self.player.name}: {player_hp} HP ] - Round ({self.__round_number}) - [ {self.enemy.name}: {enemy_hp} HP ]\n"
+
+    def __del__(self):
+        print("Combat Ended!!")
 
     def __call__(self):
         self.start()
@@ -37,7 +43,10 @@ class CombatManager:
         try:
             print("Enter choice (1-3): ")
             choice = int(input("    --> "))
-            if choice not in (1, 2, 3):
+            if not choice:
+                print("Miss your chance!")
+                return False
+            if choice not in (1, 2, 3, None):
                 print("Invalid choice")
                 return False
             return choice
@@ -46,11 +55,6 @@ class CombatManager:
             return False
 
     def PlayerTurn(self, choice: int):
-        """Attack depend on level and attack power
-        Defend more level means taken damage lose 10 %
-        heal (level * 10)
-
-        """
         self.player.is_defending = False
         if choice == 1:
             critical_chance = 0.15 + (self.player.level * 0.005)
@@ -63,6 +67,7 @@ class CombatManager:
                 )
             else:
                 self.player.attack(self.enemy)
+
         elif choice == 2:
             self.player.is_defending = True
             self.log(f"{self.player.name} Reflect {self.enemy.name}'s attack")
@@ -129,15 +134,33 @@ class CombatManager:
 
             player_choice = self.TakePlayerAction()
             if not player_choice:
-                self.log("Invalid action. Try again.")
+                self.EnemyTurn()
                 continue
 
             self.PlayerTurn(player_choice)
             if self.check_combat_end():
+                print("Do you wanna get Combat History? (Y/N)")
+                try:
+                    choice = input("    --> ")
+                    if choice.upper() == "Y":
+                        self.getLog()
+                    else:
+                        break
+                except Exception as e:
+                    print(f"[ERROR] {e}")
                 break
 
             time.sleep(1)
 
             self.EnemyTurn()
             if self.check_combat_end():
+                print("Do you wanna get Combat History? (Y/N)")
+                try:
+                    choice = input("    --> ")
+                    if choice.upper() == "Y":
+                        self.getLog()
+                    else:
+                        break
+                except Exception as e:
+                    print(f"[ERROR] {e}")
                 break
