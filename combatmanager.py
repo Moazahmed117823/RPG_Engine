@@ -2,8 +2,6 @@ import time
 import random
 from player import Player
 from enemy import Enemy
-
-
 class CombatManager:
     def __init__(self, player: Player , enemy: Enemy):
         self.player = player
@@ -11,15 +9,12 @@ class CombatManager:
         self.__round_number = 0
         self.__combat_log = []
         self.__is_active = False
-
-
+        self.__heal_charge = 3
     def log(self, message: str):
         self.__combat_log.append(message)
         print(message)
-
     def getLog(self):
         return self.__combat_log
-
     def TakePlayerAction(self):
         print("What will you do")
         print("1. Attack")
@@ -35,7 +30,6 @@ class CombatManager:
         except ValueError:
             print("Invalid input")
             return False
-
         
     def PlayerTurn(self, choice: int):
         """ Attack depend on level and attack power
@@ -58,24 +52,19 @@ class CombatManager:
             self.log(f"{self.player.name} Reflect {self.enemy.name}'s attack")
             
         elif choice == 3:
-            heal_amount = self.player.level * 10
-            self.player.heal(heal_amount)
-
-
-
+            if self.__heal_charge > 0:
+                heal_amount = self.player.level * 10
+                if self.player.hp + heal_amount <= self.player.max_hp:                    
+                    self.player.heal(heal_amount)
+                    self.__heal_charge -= 1
+                else:
+                    self.log("Not enough health") 
+            else:
+                self.log("No heal charge left")  
     def EnemyTurn(self):
         pass
-
-
     def Start(self):
         pass
-
-
-
-
-
-
-
 
 
 
