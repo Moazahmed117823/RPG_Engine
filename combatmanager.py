@@ -40,10 +40,28 @@ class CombatManager:
     def PlayerTurn(self, choice: int):
         """ Attack depend on level and attack power
             Defend more level means taken damage lose 10 %
-            heal (level * 25)
+            heal (level * 10)
             
         """
-        pass
+        self.player.is_defending = False
+        if choice == 1:
+            critical_chance = 0.15 + (self.player.level * 0.005)
+            if random.random() < critical_chance:
+                critical_damage = int(self.player.attack_power * 2)
+                self.log("Critical Hit !!")
+                self.enemy.take_damage(critical_damage)
+                self.log(f"[FIGHT] {self.player.name} give {critical_damage} critical damage to {self.enemy.name}")
+            else:
+                self.player.attack(self.enemy)
+        elif choice == 2:
+            self.player.is_defending = True
+            self.log(f"{self.player.name} Reflect {self.enemy.name}'s attack")
+            
+        elif choice == 3:
+            heal_amount = self.player.level * 10
+            self.player.heal(heal_amount)
+
+
 
     def EnemyTurn(self):
         pass
