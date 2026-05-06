@@ -65,8 +65,31 @@ class CombatManager:
             else:
                 self.log("No heal charges left!")
 
-    def EnemyTurn(self):
-        pass
+    def EnemyTurn(self,choice):
+        choice = random.randint(1,2,3)
+        if choice == 1:
+            critical_chance = 0.15 + (self.enemy.level * 0.005)
+            if random.random() < critical_chance:
+                critical_damage = int(self.enemy.attack_power * 2)
+                self.log("Critical Hit !!")
+                self.player.take_damage(critical_damage)
+                self.log(f"[FIGHT] {self.enemy.name} give {critical_damage} critical damage to {self.enemy.name}")
+            else:
+                self.enemy.attack(self.enemy)
+        elif choice == 2:
+            self.enemy.is_defending = True
+            self.log(f"{self.enemy.name} Reflect {self.player.name}'s attack")
+            
+        elif choice == 3:
+            if self.__heal_charge > 0:
+                heal_amount = self.player.level * 10
+                actual_heal = min(heal_amount, self.player.max_hp - self.player.hp)
+                self.player.heal(actual_heal)
+                self.__heal_charge -= 1
+                self.log(f"{self.player.name} healed for {actual_heal} HP!")
+            else:
+                self.log("No heal charges left!")
+
     
     def Start(self):
         pass
