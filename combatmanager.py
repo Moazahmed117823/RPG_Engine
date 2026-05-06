@@ -92,7 +92,24 @@ class CombatManager:
 
     
     def Start(self):
-        pass
+        self.__is_active = True
+        self.log(f"Combat started between {self.player.name} and {self.enemy.name}")
+        while self.__is_active:
+            self.__round_number += 1
+            self.log(f"Round {self.__round_number} begins!")
+            player_choice = self.TakePlayerAction()
+            if player_choice:
+                self.PlayerTurn(player_choice)
+                if not self.enemy.is_alive():
+                    self.log(f"{self.enemy.name} is defeated! {self.player.name} wins!")
+                    break
+                time.sleep(1)
+                self.EnemyTurn(player_choice)
+                if not self.player.is_alive():
+                    self.log(f"{self.player.name} is defeated! {self.enemy.name} wins!")
+                    break
+            else:
+                self.log("Invalid action. Try again.")
 
 
 
