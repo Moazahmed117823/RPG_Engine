@@ -2,6 +2,7 @@ import time
 import random
 from player import Player
 from enemy import Enemy
+
 class CombatManager:
     def __init__(self, player: Player , enemy: Enemy):
         self.player = player
@@ -10,11 +11,14 @@ class CombatManager:
         self.__combat_log = []
         self.__is_active = False
         self.__heal_charge = 3
+
     def log(self, message: str):
         self.__combat_log.append(message)
         print(message)
+
     def getLog(self):
         return self.__combat_log
+
     def TakePlayerAction(self):
         print("What will you do")
         print("1. Attack")
