@@ -70,7 +70,7 @@ class CombatManager:
                 self.log("No heal charges left!")
 
     def EnemyTurn(self):
-        choice = random.randint(1, 2, 3)
+        choice = random.randint(1,3)
         if choice == 1:
             critical_chance = 0.15 + (self.enemy.level * 0.005)
             if random.random() < critical_chance:
