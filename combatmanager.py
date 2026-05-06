@@ -2,6 +2,7 @@ import random
 import time
 from enemy import Enemy
 from player import Player
+from entity import Entity
 
 class CombatManager:
     def __init__(self, player: Player, enemy: Enemy):
@@ -46,7 +47,7 @@ class CombatManager:
             if not choice:
                 print("Miss your chance!")
                 return False
-            if choice not in (1, 2, 3, None):
+            if choice not in (1, 2, 3):
                 print("Invalid choice")
                 return False
             return choice
@@ -54,62 +55,61 @@ class CombatManager:
             print(f"[ERROR] {e}")
             return False
 
+    def attack(self, attacker: Entity, target: Entity):
+        critical_chance = 0.15 + (attacker.level * 0.005)
+        if random.random() < critical_chance:
+            critical_damage = int(attacker.attack_power * 2)
+            self.log("Critical Hit !!")
+            target.take_damage(critical_damage)
+            self.log(f"[FIGHT] {attacker.name} give {critical_damage} critical damage to {target.name}")
+        else:
+            attacker.attack(target)
+
+
+    def defend(self, defender: Entity, attacker: Entity):
+        defender.is_defending = True
+        self.log(f"{defender.name} Reflect {attacker.name}'s attack")
+
+    def heal(self, entity: Entity):
+        if entity == self.player:
+            charges = self.__player_heal_charge
+        else:
+            charges = self.__enemy_heal_charge
+
+        if charges > 0:
+            heal_amount = entity.level * 10
+            actual_heal = min(heal_amount, entity.max_hp - entity.hp)
+            entity.heal(actual_heal)
+            if entity == self.player:
+                self.__player_heal_charge -= 1
+            else:
+                self.__enemy_heal_charge -= 1
+            self.log(f"{entity.name} healed for {actual_heal} HP!")
+        else:
+            self.log(f"{entity.name} has no heal charges left!")
+
     def PlayerTurn(self, choice: int):
         self.player.is_defending = False
         if choice == 1:
-            critical_chance = 0.15 + (self.player.level * 0.005)
-            if random.random() < critical_chance:
-                critical_damage = int(self.player.attack_power * 2)
-                self.log("Critical Hit !!")
-                self.enemy.take_damage(critical_damage)
-                self.log(
-                    f"[FIGHT] {self.player.name} give {critical_damage} critical damage to {self.enemy.name}"
-                )
-            else:
-                self.player.attack(self.enemy)
+            self.attack(self.player, self.enemy)
 
         elif choice == 2:
-            self.player.is_defending = True
-            self.log(f"{self.player.name} Reflect {self.enemy.name}'s attack")
+            self.defend(self.player, self.enemy)
 
         elif choice == 3:
-            if self.__player_heal_charge > 0:
-                heal_amount = self.player.level * 10
-                actual_heal = min(heal_amount, self.player.max_hp - self.player.hp)
-                self.player.heal(actual_heal)
-                self.__player_heal_charge -= 1
-                self.log(f"{self.player.name} healed for {actual_heal} HP!")
-            else:
-                self.log("No heal charges left!")
+            self.heal(self.player)
 
     def EnemyTurn(self):
-        self.enemy.is_defending = False
-        choice = random.randint(1, 3)
+        choice = random.randint(1,3)
+        
         if choice == 1:
-            critical_chance = 0.15 + (self.enemy.level * 0.005)
-            if random.random() < critical_chance:
-                critical_damage = int(self.enemy.attack_power * 2)
-                self.log("Critical Hit !!")
-                self.player.take_damage(critical_damage)
-                self.log(
-                    f"[FIGHT] {self.enemy.name} gives {critical_damage} critical damage to {self.player.name}"
-                )
-            else:
-                self.enemy.attack(self.player)
+            self.attack(self.enemy, self.player)
 
         elif choice == 2:
-            self.enemy.is_defending = True
-            self.log(f"{self.enemy.name} Reflect {self.player.name}'s attack")
+            self.defend(self.enemy, self.player)
 
         elif choice == 3:
-            if self.__enemy_heal_charge > 0:
-                heal_amount = self.enemy.level * 10
-                actual_heal = min(heal_amount, self.enemy.max_hp - self.enemy.hp)
-                self.enemy.heal(actual_heal)
-                self.__enemy_heal_charge -= 1
-                self.log(f"{self.enemy.name} healed for {actual_heal} HP!")
-            else:
-                self.log(f"{self.enemy.name} has no heal charges left!")
+            self.heal(self.enemy)
 
     def check_combat_end(self):
         if not self.player.is_alive():
