@@ -107,7 +107,7 @@ class CombatManager:
 
     def Start(self):
         self.__is_active = True
-        self.log(f"Combat started between {self.player.name} and {self.enemy.name}")
+        self.log(f"\nCombat started between {self.player.name} and {self.enemy.name}\n{self.player.hp}HP --- {self.enemy.hp}HP\n")
         while self.__is_active:
             self.__round_number += 1
             self.log(f"Round {self.__round_number} begins!")
