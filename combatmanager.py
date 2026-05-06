@@ -8,15 +8,17 @@ class CombatManager:
     def __init__(self, player: Player , enemy: Enemy):
         self.player = player
         self.enemy = enemy
-        self.round_number = 0
-        self.combat_log = []
-        self.is_active = False
+        self.__round_number = 0
+        self.__combat_log = []
+        self.__is_active = False
 
 
     def log(self, message: str):
-        self.combat_log.append(message)
+        self.__combat_log.append(message)
         print(message)
 
+    def getLog(self):
+        return self.__combat_log
 
     def TakePlayerAction(self):
         print("What will you do")
@@ -28,15 +30,35 @@ class CombatManager:
             choice = int(input("    -->"))
             if choice not in (1,2,3):
                 print("Invalid choice")
-                return -1
+                return False
             return choice
         except ValueError:
             print("Invalid input")
-            return -1
+            return False
 
-
+        
     def PlayerTurn(self, choice: int):
+        """ Attack depend on level and attack power
+            Defend more level means taken damage lose 10 %
+            heal (level * 25)
+            
+        """
+        pass
+
+    def EnemyTurn(self):
         pass
 
 
-    
+    def Start(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
