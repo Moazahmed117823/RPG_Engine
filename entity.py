@@ -10,6 +10,9 @@ class Entity(ABC):
         self.attack_power = attack_power
         self.is_defending = False
 
+    def heal(self, amount):
+        self.hp = min(self.hp + amount, self.max_hp)
+
     def take_damage(self, amount: int):
         if self.is_defending:
             amount = max(1, int(amount * (1 - self.level * 0.05)))
