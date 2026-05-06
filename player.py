@@ -5,9 +5,4 @@ class Player(Entity):
         super().__init__(name, hp, level, attack_power)
         self.inventory = []
 
-    def heal(self, amount):
-        self.hp += amount
-        print(f"{self.name} healed for {amount} hp")
-        
-
 

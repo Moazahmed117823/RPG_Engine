@@ -1,2 +1,6 @@
 __pycache__/__pycache__/
 *.pyc
+.gitignore
+combat.py
+phase_1.py
+main.py

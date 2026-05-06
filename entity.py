@@ -12,7 +12,7 @@ class Entity(ABC):
 
     def take_damage(self, amount: int):
         if self.is_defending:
-            amount //= self.level * 0.25
+            amount = max(1, int(amount * (1 - self.level * 0.05)))
             print(f"{self.name} blocks the attack!")
         self.hp -= amount
 
