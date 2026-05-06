@@ -1,5 +1,5 @@
 from abc import ABC , abstractmethod
-
+import random
 class Entity(ABC):
     def __init__(self, name: str = None, hp: int = 100, level: int = 1, attack_power: int = 1):
         self.name = name
@@ -11,16 +11,15 @@ class Entity(ABC):
 
     def take_damage(self, amount: int):
         if self.is_defending:
-            amount //= 2
+            amount //= self.level * 0.25
             print(f"{self.name} blocks the attack!")
         self.hp -= amount
 
-    def attack(self, victum):
-        victum.take_damage(self.attack_power)
-        print(f"{self.name} attacked {victum.name} for {self.attack_power} damage")
+    def attack(self, other):
+        damage = random.randint(5,20) + self.attack_power
+        other.take_damage(damage)
+        print(f"{self.name} attacked {other.name} for {damage} damage")
     
     def is_alive(self):
         return self.hp > 0
-    
-# Test
-    
+
