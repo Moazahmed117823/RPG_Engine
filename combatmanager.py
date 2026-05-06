@@ -28,7 +28,7 @@ class CombatManager:
         print("3. Heal")
         try:
             print("Enter choice (1-3): ")
-            choice = int(input("    -->"))
+            choice = int(input("    --> "))
             if choice not in (1, 2, 3):
                 print("Invalid choice")
                 return False
