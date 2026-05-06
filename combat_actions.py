@@ -3,8 +3,8 @@ from entity import Entity
 
 
 class CombatActions:
-    def __init__(self, log_callback):
-        self._log = log_callback
+    def __init__(self, log):
+        self._log = log
 
     def attack(self, attacker: Entity, target: Entity):
         critical_chance = 0.15 + (attacker.level * 0.005)
