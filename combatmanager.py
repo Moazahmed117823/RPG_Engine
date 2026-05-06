@@ -69,7 +69,7 @@ class CombatManager:
             else:
                 self.log("No heal charges left!")
 
-    def EnemyTurn(self, choice):
+    def EnemyTurn(self):
         choice = random.randint(1, 2, 3)
         if choice == 1:
             critical_chance = 0.15 + (self.enemy.level * 0.005)
@@ -118,7 +118,7 @@ class CombatManager:
                     self.log(f"{self.enemy.name} is defeated! {self.player.name} wins!")
                     break
                 time.sleep(1)
-                self.EnemyTurn(player_choice)
+                self.EnemyTurn()
                 if not self.player.is_alive():
                     self.log(f"{self.player.name} is defeated! {self.enemy.name} wins!")
                     break
