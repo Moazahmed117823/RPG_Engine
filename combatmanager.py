@@ -68,6 +68,17 @@ class CombatManager:
     def EnemyTurn(self):
         pass
     
+
+    def check_combat_end(self):
+        if not self.player.is_alive():
+            self.log(f"\n{self.player.name} has been defeated. Game Over.")
+            return True
+        if not self.enemy.is_alive():
+            self.log(f"\n{self.player.name} is victorious!")
+            return True
+        return False
+
+
     def Start(self):
         pass
 
