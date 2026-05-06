@@ -7,5 +7,5 @@ class Enemy(Entity):
         super().__init__(name, hp, level, attack_power)
 
     def heal(self, amount):
-        self.hp += amount
+        self.hp = min(self.hp + amount, self.max_hp)
 

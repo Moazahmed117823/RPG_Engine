@@ -6,4 +6,5 @@ class Player(Entity):
         self.inventory = []
 
     def heal(self, amount):
-        self.hp += amount
+        self.hp = min(self.hp + amount, self.max_hp)
+    
