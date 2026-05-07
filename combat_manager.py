@@ -1,3 +1,4 @@
+import collections
 import random
 import time
 from enemy import Enemy
@@ -17,16 +18,20 @@ class CombatManager:
         self.actions = CombatActions(self.log)
 
     def log(self, message: str):
-        self.__combat_log.append(message)
+        self.__combat_log.append(f"Round {self.__round_number}: {message}")
         print(message)
 
     def getLog(self):
-        print("\n================================= FIGHT HISTORY =================================")
-        for log in self.__combat_log:
-            print(f" {log}\n")
-        print("\n================================= END of FIGHT ==================================")
+        print("\n================================= FIGHT HISTORY =================================\n")
+        if not self.__combat_log:
+            print("No combat log available")
+            return []
+        else:
+            for i,log in enumerate(self.__combat_log):
+                print(f"[Step {i+1}] {log}")
+            print("\n================================= END of FIGHT ==================================\n")
 
- 
+
     def __str__(self):
         player_hp = max(0, self.player.hp)
         enemy_hp = max(0, self.enemy.hp)
@@ -93,7 +98,7 @@ class CombatManager:
 
     def start(self):
         self.__is_active = True
-        self.log(f"\nCombat started between {self.player.name} and {self.enemy.name}")
+        self.log(f"\nCombat started between {self.player.name} and {self.enemy.name}\n")
 
         while self.__is_active:
             self.__round_number += 1
