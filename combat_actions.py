@@ -13,8 +13,7 @@ class CombatActions:
             self._log("Critical Hit !!")
         else:
             damage = random.randint(5, 20) + attacker.attack_power
-        actual_damage = target.take_damage(damage)
-        blocked = target.take_damage(damage)
+        actual_damage, blocked = target.take_damage(damage)
         if blocked:
             self._log(f"{target.name} deflect the attack!")
         self._log(f"[FIGHT] {attacker.name} dealt {actual_damage} damage to {target.name}")
