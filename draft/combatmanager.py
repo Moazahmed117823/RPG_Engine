@@ -2,8 +2,7 @@ import random
 import time
 from enemy import Enemy
 from player import Player
-from combat_actions import CombatActions
-
+from entity import Entity
 
 class CombatManager:
     def __init__(self, player: Player, enemy: Enemy):
@@ -14,23 +13,20 @@ class CombatManager:
         self.__is_active = False
         self.__player_heal_charge = 3
         self.__enemy_heal_charge = 3
-        self.actions = CombatActions(self.log)
 
     def log(self, message: str):
-        self.__combat_log.append(f"Round {self.__round_number}: {message}")
+        self.__combat_log.append(message)
         print(message)
 
     def getLog(self):
-        print("\n================================= FIGHT HISTORY =================================\n")
-        if not self.__combat_log:
-            print("No combat log available")
-            return []
-        else:
-            for i,log in enumerate(self.__combat_log):
-                print(f"[Step {i+1}] {log}")
-            print("\n================================= END of FIGHT ==================================\n")
+        header = "\n================================= FIGHT HISTORY ================================="
+        footer = "================================= END of FIGHT =================================="
+        f_logs = "\n".join(self.__combat_log)
+        logs_output = f"{header}\n{f_logs}\n{footer}"
+        print(logs_output)
+        return self.__combat_log
 
-
+ 
     def __str__(self):
         player_hp = max(0, self.player.hp)
         enemy_hp = max(0, self.enemy.hp)
@@ -64,26 +60,25 @@ class CombatManager:
     def PlayerTurn(self, choice: int):
         self.player.is_defending = False
         if choice == 1:
-            self.actions.attack(self.player, self.enemy)
+            self.attack(self.player, self.enemy)
 
         elif choice == 2:
-            self.actions.defend(self.player)
+            self.defend(self.player, self.enemy)
 
         elif choice == 3:
-            self.__player_heal_charge = self.actions.heal(self.player, self.__player_heal_charge)
+            self.heal(self.player)
 
     def EnemyTurn(self):
-        self.enemy.is_defending = False
         choice = random.randint(1,3)
         
         if choice == 1:
-            self.actions.attack(self.enemy, self.player)
+            self.attack(self.enemy, self.player)
 
         elif choice == 2:
-            self.actions.defend(self.enemy)
+            self.defend(self.enemy, self.player)
 
         elif choice == 3:
-            self.__enemy_heal_charge = self.actions.heal(self.enemy, self.__enemy_heal_charge)
+            self.heal(self.enemy)
 
     def check_combat_end(self):
         if not self.player.is_alive():
@@ -98,10 +93,12 @@ class CombatManager:
 
     def start(self):
         self.__is_active = True
-        self.log(f"\nCombat started between {self.player.name} and {self.enemy.name}\n")
+        self.log(f"\nCombat started between {self.player.name} and {self.enemy.name}")
+        #self.log(f"{self.player.hp} HP  ---  {self.enemy.hp} HP\n")
 
         while self.__is_active:
             self.__round_number += 1
+            #self.log(f"\n--- Round {self.__round_number} ---")
             print(self)
 
             player_choice = self.TakePlayerAction()

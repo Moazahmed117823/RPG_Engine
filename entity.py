@@ -14,15 +14,16 @@ class Entity(ABC):
         self.hp = min(self.hp + amount, self.max_hp)
 
     def take_damage(self, amount: int):
+        blocked = False
         if self.is_defending:
             amount = max(1, int(amount * (1 - self.level * 0.05)))
-            print(f"{self.name} blocks the attack!")
+            blocked = True
         self.hp -= amount
+        return amount, blocked
 
     def attack(self, other):
         damage = random.randint(5,20) + self.attack_power
         other.take_damage(damage)
-        print(f"{self.name} attacked {other.name} for {damage} damage")
     
     def is_alive(self):
         return self.hp > 0
