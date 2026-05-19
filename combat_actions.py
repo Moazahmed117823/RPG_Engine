@@ -8,19 +8,22 @@ class CombatActions:
         self._log = log
 
     def attack(self, attacker: Entity, target: Entity):
-        base_damage = random.randint(5, 20) + attacker.attack_power
+        base_damage = random.randint(5,20) + attacker.attack_power
         critical_chance = 0.15 + (attacker.level * 0.005)
         if random.random() < critical_chance:
             damage = int(base_damage * 2)
             self._log("Critical Hit !!")
         else:
             damage = base_damage
-        actual_damage, blocked = target.take_damage(damage)
-        if blocked:
-            self._log(f"{target.name} deflect the attack!")
-        self._log(
-            f"[FIGHT] {attacker.name} dealt {actual_damage} damage to {target.name}"
-        )
+        actual_damage, blocked, dodged = target.take_damage(damage)
+        if dodged:
+            self._log(f"{target.name} dodged the attack!")
+        else:
+            if blocked:
+                self._log(f"{target.name} deflect the attack!")
+            self._log(
+                f"[FIGHT] {attacker.name} dealt {(round(actual_damage,2))} damage to {target.name}"
+            )
 
     def defend(self, defender: Entity):
         defender.is_defending = True
