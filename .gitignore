@@ -4,3 +4,4 @@ __pycache__/__pycache__/
 combat.py
 phase_1.py
 main.py
+.env
